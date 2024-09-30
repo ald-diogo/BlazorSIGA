@@ -1,0 +1,49 @@
+﻿@page "/estatisticas-notas"
+@using System.Linq
+
+<h3>Estatísticas das Notas</h3>
+
+<input @bind="novaNota" placeholder="Digite uma nota" type="number" />
+<button @onclick="AdicionarNota">Adicionar Nota</button>
+
+<table>
+    <thead>
+        <tr>
+            <th>Notas</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var nota in notas)
+        {
+            <tr>
+                <td>@nota</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (notas.Any())
+{
+    <p>Média Geral: @notas.Average()</p>
+    <p>Maior Nota: @notas.Max()</p>
+    <p>Menor Nota: @notas.Min()</p>
+}
+else
+{
+    <p>Nenhuma nota adicionada.</p>
+}
+
+@code {
+    private List<double> notas = new List<double>();
+    private double novaNota;
+
+    private void AdicionarNota()
+    {
+        if (novaNota >= 0)
+        {
+            notas.Add(novaNota);
+            novaNota = 0;
+        }
+    }
+}
+

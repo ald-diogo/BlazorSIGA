@@ -1,0 +1,18 @@
+﻿@page "/theme-selector"
+@inject ThemeService ThemeService
+
+<h3>Selecione o Tema</h3>
+
+<select @onchange="ChangeTheme">
+    <option value="light">Claro</option>
+    <option value="dark">Escuro</option>
+</select>
+
+@code {
+    private async Task ChangeTheme(ChangeEventArgs e)
+    {
+        var theme = e.Value.ToString();
+        await ThemeService.ApplyTheme(theme);
+    }
+}
+

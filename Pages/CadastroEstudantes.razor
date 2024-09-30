@@ -1,0 +1,77 @@
+﻿@page "/estudantes"
+@using BlazorSIGA.Server.Entidades
+@using BlazorSIGA.Server.Services
+@inject EstudanteService EstudanteService
+
+<h3>Cadastro de Estudantes</h3>
+
+<button @onclick="AdicionarEstudante">Adicionar Estudante</button>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Data de Nascimento</th>
+            <th>Acções</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var estudante in estudantes)
+        {
+            <tr>
+                <td>@estudante.Nome</td>
+                <td>@estudante.Email</td>
+                <td>@estudante.DataNascimento.ToShortDateString()</td>
+                <td>
+                    <button @onclick="() => EditarEstudante(estudante.Id)">Editar</button>
+                </td>
+                <td>
+                    <button @onclick="() => ExcluirEstudante(estudante.Id)">Excluir</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@foreach (var estudante in EstudanteService.GetEstudantes())
+{
+    <div>
+        <p>@estudante.Nome</p>
+        <button @onclick="() => EditarEstudante(estudante.Id)">Editar</button>
+        <button @onclick="() => ExcluirEstudante(estudante.Id)">Excluir</button>
+    </div>
+}
+
+@code {
+    private List<Estudante> estudantes;
+
+    protected override void OnInitialized() => estudantes = EstudanteService.GetEstudantes().ToList();
+
+    private void AdicionarEstudante()
+    {
+        var novoEstudante = new Estudante { Nome = "Novo Estudante" };
+        EstudanteService.AddEstudante(novoEstudante);
+        estudantes = EstudanteService.GetEstudantes().ToList();
+    }
+
+    private void EditarEstudante(int id)
+    {
+        var estudante = estudantes.FirstOrDefault(e => e.Id == id);
+        if (estudante != null)
+        {
+            estudante.Nome = "Nome Editado";
+            EstudanteService.UpdateEstudante(estudante);
+            estudantes = EstudanteService.GetEstudantes().ToList();
+        }
+    }
+
+    private void ExcluirEstudante(int id)
+    {
+        EstudanteService.DeleteEstudante(id);
+        estudantes = EstudanteService.GetEstudantes().ToList();
+    }
+}
+
+

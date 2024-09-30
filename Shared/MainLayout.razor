@@ -1,0 +1,30 @@
+﻿<h3>MainLayout</h3>
+
+<button @onclick="ConfirmarSaida">Terminar Sessão</button>
+
+@code {
+    private async Task ConfirmarSaida()
+    {
+        bool confirmar = await JSRuntime.InvokeAsync<bool>("confirm", "Será que pretende sair da aplicação?");
+        if (confirmar)
+        {
+            // Lógica para terminar a sessão
+            // Por exemplo, limpar dados do usuário e navegar para a página de login
+            LimparDadosUsuario();
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+
+    private void LimparDadosUsuario()
+    {
+        // Implementar a lógica para limpar os dados do usuário
+        // Por exemplo, limpar cookies, local storage, etc.
+    }
+
+    [Inject]
+    private IJSRuntime JSRuntime { get; set; }
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; }
+}
+

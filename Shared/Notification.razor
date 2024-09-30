@@ -1,0 +1,28 @@
+﻿@page "/notifications"
+@inject IJSRuntime JSRuntime
+@inject NotificationService NotificationService
+
+<h3>Notificações</h3>
+
+<button @onclick="SolicitarPermissao">Permitir Notificações</button>
+<button @onclick="EnviarNotificacao">Enviar Notificação</button>
+
+@code {
+    private async Task SolicitarPermissao()
+    {
+        var permission = await JSRuntime.InvokeAsync<string>("Notification.requestPermission");
+        if (permission == "granted")
+        {
+            Console.WriteLine("Permissão concedida para notificações.");
+        }
+        else
+        {
+            Console.WriteLine("Permissão negada para notificações.");
+        }
+    }
+
+    private async Task EnviarNotificacao()
+    {
+        await JSRuntime.InvokeVoidAsync("exibirNotificacao", "Olá!", "Esta é uma notificação de teste.");
+    }
+}

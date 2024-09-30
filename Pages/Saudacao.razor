@@ -1,0 +1,39 @@
+﻿@page "/saudacao"
+@inject NavigationManager Navigation
+
+<h3>@saudacao</h3>
+
+@code {
+    private string saudacao;
+
+    protected override void OnInitialized()
+    {
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+        if (query.TryGetValue("loginTime", out var loginTimeString) && DateTime.TryParse(loginTimeString, out var loginTime))
+        {
+            saudacao = ObterSaudacao(loginTime);
+        }
+        else
+        {
+            saudacao = "Olá!";
+        }
+    }
+
+    private string ObterSaudacao(DateTime loginTime)
+    {
+        if (loginTime.Hour < 12)
+        {
+            return "Bom dia!";
+        }
+        else if (loginTime.Hour < 18)
+        {
+            return "Boa tarde!";
+        }
+        else
+        {
+            return "Boa noite!";
+        }
+    }
+}
+

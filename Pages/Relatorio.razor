@@ -1,0 +1,43 @@
+﻿@page "/academic-reports"
+@using BlazorSIGA.Server.Services
+@using BlazorSIGA.Server.Entidades
+@inject RelatorioService RelatorioService
+
+<h3>Relatórios Acadêmicos</h3>
+
+@if (reports == null)
+{
+    <p>Carregando...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome do Estudante</th>
+                <th>Classe</th>
+                <th>Disciplina</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var report in reports)
+            {
+                <tr>
+                    <td>@Relatorio.NomeEstudante</td>
+                    <td>@Relatorio.Classe</td>
+                    <td>@Relatorio.Disciplina</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Relatorio> reports;
+
+    protected override async Task OnInitializedAsync()
+    {
+        reports = await ReportService.GetReportsAsync();
+    }
+}
+

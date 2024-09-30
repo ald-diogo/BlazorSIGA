@@ -1,0 +1,79 @@
+﻿@page "/cadastro"
+@using BlazorSIGA.Server.Entidades
+@using BlazorSIGA.Server.Services
+@inject ProfessorService ProfessorService
+
+<h3>Cadastro de Professores</h3>
+
+<button @onclick="AdicionarProfessor">Adicionar Professor</button>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Data de Contratação</th>
+            <th>Acções</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var professor in professores)
+        {
+            <tr>
+                <td>@professor.Nome</td>
+                <td>@professor.Email</td>
+                <td>@professor.DataContratacao.ToShortDateString()</td>
+                <td>
+                    <button @onclick="() => EditarProfessor(professor.Id)">Editar</button>
+                </td>
+                <td>
+                    <button @onclick="() => ExcluirProfessor(professor.Id)">Excluir</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@foreach (var professor in ProfessorService.GetProfessores())
+{
+    <div>
+        <p>@professor.Nome</p>
+        <button @onclick="() => EditarProfessor(professor.Id)">Editar</button>
+        <button @onclick="() => ExcluirProfessor(professor.Id)">Excluir</button>
+    </div>
+}
+
+@code {
+    private List<Professor> professores;
+
+    protected override void OnInitialized() => professores = ProfessorService.GetProfessores().ToList();
+
+    private void AdicionarProfessor()
+    {
+        var novoProfessor = new Professor { Nome = "Novo Professor" };
+        ProfessorService.AddProfessor(novoProfessor);
+        professores = ProfessorService.GetProfessores().ToList();
+    }
+
+    private void EditarProfessor(int id)
+    {
+        var professor = professores.FirstOrDefault(p => p.Id == id);
+        if (professor != null)
+        {
+            professor.Nome = "Nome Editado";
+            ProfessorService.UpdateProfessor(professor);
+            professores = ProfessorService.GetProfessores().ToList();
+        }
+    }
+
+    private void ExcluirProfessor(int id)
+    {
+        ProfessorService.DeleteProfessor(id);
+        professores = ProfessorService.GetProfessores().ToList();
+    }
+}
+
+
+
+

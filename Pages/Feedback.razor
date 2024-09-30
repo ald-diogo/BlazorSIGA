@@ -1,0 +1,50 @@
+﻿@page "/feedback"
+@using BlazorSIGA.Server.Entidades
+@using BlazorSIGA.Server.Services
+@inject FeedbackService FeedbackService
+
+<h3>Feedback dos Usuários</h3>
+
+<input @bind="nFeedback.Nome" placeholder="Seu Nome" />
+<textarea @bind="Feedback.Comentario" placeholder="Seu Comentário"></textarea>
+<button @onclick="AdicionarFeedback">Enviar Feedback</button>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Comentário</th>
+            <th>Data</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var feedback in feedbacks)
+        {
+            <tr>
+                <td>@feedback.Nome</td>
+                <td>@feedback.Comentario</td>
+                <td>@feedback.Data.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<Feedback> feedbacks;
+    private Feedback novoFeedback = new Feedback();
+		internal object Id;
+
+		protected override void OnInitialized()
+    {
+        feedbacks = FeedbackService.GetFeedbacks().ToList();
+    }
+
+    private void AdicionarFeedback()
+    {
+        novoFeedback.Data = DateTime.Now;
+        FeedbackService.AddFeedback(novoFeedback);
+        feedbacks = FeedbackService.GetFeedbacks().ToList();
+        novoFeedback = new Feedback();
+    }
+}
+

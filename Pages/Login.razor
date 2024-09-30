@@ -1,0 +1,50 @@
+﻿@page "/login"
+@using BlazorSIGA.Server.Services
+@inject AuthenticationService AuthenticationService
+@inject IJSRuntime JSRuntime
+
+<h3>Login</h3>
+
+<input @bind="username" placeholder="Username" />
+<input @bind="password" placeholder="Password" type="password" />
+<button @onclick="IniciarSessao">Iniciar Sessão</button>
+<button @onclick="ConfirmarTerminarSessao">Terminar Sessão</button>
+
+@code {
+    private string username;
+    private string password;
+
+    private async Task IniciarSessao()
+    {
+        var result = await AuthenticationService.Login(username, password);
+        if (result)
+        {
+            Console.WriteLine("Login bem-sucedido!");
+        }
+        else
+        {
+            Console.WriteLine("Falha no login. Verifique suas credenciais.");
+        }
+    }
+
+    private async Task ConfirmarTerminarSessao()
+    {
+        if (await Confirm("Pretende terminar a sessão?"))
+        {
+            await TerminarSessao();
+        }
+    }
+
+    private async Task TerminarSessao()
+    {
+        await AuthenticationService.Logout();
+        Console.WriteLine("Sessão terminada com sucesso!");
+    }
+
+    private async Task<bool> Confirm(string message)
+    {
+        return await JSRuntime.InvokeAsync<bool>("confirm", message);
+    }
+}
+
+

@@ -1,0 +1,30 @@
+﻿@page "/avaliacao"
+@using BlazorGestãodeNotas
+@using BlazorSIGA.Server.Services
+@inject NotaService NotaService
+@inject AvaliacaoService AvaliacaoService
+@inject SaudacaoService SaudacaoService
+
+<h2>@SaudacaoService.ObterSaudacao(), Bem-vindo à Avaliação de Estudantes!</h2>
+
+<h3>Avaliação dos Estudantes</h3>
+
+<input @bind="idEstudanteAvaliacao" placeholder="ID do Estudante" type="number" />
+
+<button @onclick="CalcularMedia">Calcular Média</button>
+
+<p>Média: @media</p>
+<p>Situação: @situacao</p>
+
+@code {
+    private int idEstudanteAvaliacao;
+    private double media;
+    private string situacao;
+
+    private void CalcularMedia()
+    {
+        media = NotaService.CalcularMedia(idEstudanteAvaliacao);
+        situacao = AvaliacaoService.AvaliarAluno(media);
+    }
+}
+
